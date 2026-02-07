@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     port: 3000,
   },
-  base: '/', // For root domain deployment (Netlify, Vercel). Change to '/repo-name/' for GitHub Pages
+  base: '/vistafly-studyguide/', // GitHub Pages base path
   build: {
     outDir: 'dist',
     sourcemap: false,
