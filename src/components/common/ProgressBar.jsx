@@ -70,10 +70,10 @@ export function CircularProgress({
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   const colors = {
-    cyan: '#00fff7',
-    pink: '#ff00ff',
-    green: '#39ff14',
-    yellow: '#ffd700',
+    cyan: '#E4D8C4',
+    pink: '#B8A99A',
+    green: '#C8BAAA',
+    yellow: '#D4C5B2',
   };
 
   return (
@@ -85,7 +85,7 @@ export function CircularProgress({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#353545"
+          stroke="#2D2D2D"
           strokeWidth={strokeWidth}
         />
         {/* Progress circle */}

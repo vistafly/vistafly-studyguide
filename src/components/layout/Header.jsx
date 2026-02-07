@@ -9,7 +9,6 @@ import {
   BarChart3,
   Menu,
   X,
-  Zap,
   Flag,
   Wrench,
 } from 'lucide-react';
@@ -33,23 +32,21 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-neon-cyan to-neon-pink flex items-center justify-center">
-              <Zap className="w-6 h-6 text-dark-900" />
-            </div>
+            <img src={import.meta.env.BASE_URL + 'logo.gif'} alt="VistaFly Logo" className="w-14 h-14 rounded-lg" />
             <div>
               <h1 className="font-display font-bold text-lg text-white group-hover:text-neon-cyan transition-colors">
-                FPV Mastery
+                VistaFly Academy
               </h1>
-              <p className="text-xs text-white/50 font-body">Technical Interview Prep</p>
+              <p className="text-xs text-white/50 font-body">Drone Training Portal</p>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-3">
             {navItems.map(({ path, label, icon: Icon }) => {
               const isActive = location.pathname === path;
               return (

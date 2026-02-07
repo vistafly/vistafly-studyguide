@@ -83,7 +83,7 @@ export default function QuestionCard({
           if (isRevealed) {
             if (option.id === question.correctAnswer) {
               optionStyle =
-                'border-neon-green bg-neon-green/10 shadow-[0_0_15px_rgba(57,255,20,0.15)]';
+                'border-neon-green bg-neon-green/10 shadow-[0_0_15px_rgba(200,186,170,0.15)]';
             } else if (
               option.id === selectedOption &&
               option.id !== question.correctAnswer
@@ -95,7 +95,7 @@ export default function QuestionCard({
             }
           } else if (option.id === selectedOption) {
             optionStyle =
-              'border-neon-cyan bg-neon-cyan/10 shadow-[0_0_15px_rgba(0,255,247,0.15)]';
+              'border-neon-cyan bg-neon-cyan/10 shadow-[0_0_15px_rgba(228,216,196,0.15)]';
           } else {
             optionStyle =
               'border-dark-500 bg-gradient-to-r from-dark-800 to-dark-700 hover:border-dark-400';

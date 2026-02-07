@@ -3,14 +3,14 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react(), tailwindcss()],
   server: {
     port: 3000,
   },
-  base: '/vistafly-studyguide/', // GitHub Pages base path
+  base: command === 'build' ? '/vistafly-studyguide/' : '/',
   build: {
     outDir: 'dist',
     sourcemap: false,
   },
-})
+}))

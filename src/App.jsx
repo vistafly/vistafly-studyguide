@@ -12,7 +12,7 @@ import Progress from './pages/Progress';
 function App() {
   return (
     <ProgressProvider>
-      <BrowserRouter basename="/vistafly-studyguide">
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/topics" element={<Topics />} />

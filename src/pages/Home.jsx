@@ -4,14 +4,17 @@ import {
   BookOpen,
   CreditCard,
   HelpCircle,
-  Trophy,
   Clock,
   Target,
   Zap,
   ChevronRight,
   Wrench,
+  Flame,
+  GraduationCap,
+  Rocket,
+  TrendingUp,
 } from 'lucide-react';
-import { PageLayout, PageHeader } from '../components/layout';
+import { PageLayout } from '../components/layout';
 import { Card, Button, ProgressBar, CircularProgress } from '../components/common';
 import { useProgress } from '../context/ProgressContext';
 import { CATEGORIES, FPV_TOPICS } from '../data/topics';
@@ -47,6 +50,46 @@ const studyModes = [
   },
 ];
 
+const statItems = [
+  {
+    icon: Flame,
+    getValue: (stats) => stats.studyStreak,
+    label: 'Day Streak',
+    color: 'orange',
+    glowColor: 'orange',
+  },
+  {
+    icon: GraduationCap,
+    getValue: (stats) => `${stats.topicsMastered}/${stats.totalTopics}`,
+    label: 'Topics Mastered',
+    color: 'cyan',
+    glowColor: 'cyan',
+  },
+  {
+    icon: Target,
+    getValue: (stats) => `${stats.averageQuizScore}%`,
+    label: 'Avg Quiz Score',
+    color: 'green',
+    glowColor: 'green',
+  },
+  {
+    icon: Clock,
+    getValue: (stats) => `${Math.round(stats.totalTimeStudied / 60)}h`,
+    label: 'Time Studied',
+    color: 'pink',
+    glowColor: 'pink',
+  },
+];
+
+const neonColors = {
+  cyan: '#E4D8C4',
+  pink: '#B8A99A',
+  yellow: '#D4C5B2',
+  green: '#C8BAAA',
+  orange: '#E4D8C4',
+  red: '#A89585',
+};
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -80,19 +123,25 @@ export default function Home() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-12"
+        className="relative text-center mb-16 pt-4"
       >
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neon-cyan/10 border border-neon-cyan/30 mb-4">
-          <Zap className="w-4 h-4 text-neon-cyan" />
-          <span className="font-body text-neon-cyan text-sm">Technical Interview Prep</span>
+        {/* Decorative top line */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px bg-gradient-to-r from-transparent via-neon-cyan/60 to-transparent" />
+
+        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-neon-cyan/5 border border-neon-cyan/20 mb-6 backdrop-blur-sm">
+          <Zap className="w-3.5 h-3.5 text-neon-cyan" />
+          <span className="font-body text-neon-cyan text-xs tracking-widest uppercase">Technical Interview Prep</span>
         </div>
-        <h1 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl text-white mb-4">
+        <h1 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl text-white mb-4 tracking-tight">
           Welcome back, <span className="text-glow-cyan text-neon-cyan">Ron</span>
         </h1>
-        <p className="font-body text-lg text-white/60 max-w-2xl mx-auto">
+        <p className="font-body text-base text-white/40 max-w-xl mx-auto leading-relaxed">
           Master FPV drone technical knowledge for your upcoming interview.
           Your journey to expertise continues here.
         </p>
+
+        {/* Decorative bottom line */}
+        <div className="mt-8 mx-auto w-64 h-px bg-gradient-to-r from-transparent via-dark-500 to-transparent" />
       </motion.div>
 
       {/* Stats Overview */}
@@ -100,47 +149,30 @@ export default function Home() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
+        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14"
       >
-        <motion.div variants={itemVariants}>
-          <Card className="text-center" glowColor="cyan">
-            <div className="text-3xl mb-2">🔥</div>
-            <div className="font-display font-bold text-2xl text-neon-orange">
-              {stats.studyStreak}
-            </div>
-            <div className="font-body text-sm text-white/60">Day Streak</div>
-          </Card>
-        </motion.div>
-
-        <motion.div variants={itemVariants}>
-          <Card className="text-center" glowColor="pink">
-            <div className="text-3xl mb-2">📚</div>
-            <div className="font-display font-bold text-2xl text-neon-cyan">
-              {stats.topicsMastered}/{stats.totalTopics}
-            </div>
-            <div className="font-body text-sm text-white/60">Topics Mastered</div>
-          </Card>
-        </motion.div>
-
-        <motion.div variants={itemVariants}>
-          <Card className="text-center" glowColor="yellow">
-            <div className="text-3xl mb-2">🎯</div>
-            <div className="font-display font-bold text-2xl text-neon-green">
-              {stats.averageQuizScore}%
-            </div>
-            <div className="font-body text-sm text-white/60">Avg Quiz Score</div>
-          </Card>
-        </motion.div>
-
-        <motion.div variants={itemVariants}>
-          <Card className="text-center" glowColor="green">
-            <div className="text-3xl mb-2">⏱️</div>
-            <div className="font-display font-bold text-2xl text-neon-pink">
-              {Math.round(stats.totalTimeStudied / 60)}h
-            </div>
-            <div className="font-body text-sm text-white/60">Time Studied</div>
-          </Card>
-        </motion.div>
+        {statItems.map(({ icon: Icon, getValue, label, color, glowColor }) => (
+          <motion.div key={label} variants={itemVariants}>
+            <Card className="text-center" glowColor={glowColor}>
+              <div
+                className="w-10 h-10 mx-auto mb-3 rounded-lg flex items-center justify-center border"
+                style={{
+                  backgroundColor: `${neonColors[color]}0d`,
+                  borderColor: `${neonColors[color]}33`,
+                }}
+              >
+                <Icon className="w-5 h-5" style={{ color: neonColors[color] }} />
+              </div>
+              <div
+                className="font-display font-bold text-2xl mb-1"
+                style={{ color: neonColors[color] }}
+              >
+                {getValue(stats)}
+              </div>
+              <div className="font-body text-xs text-white/40 uppercase tracking-wider">{label}</div>
+            </Card>
+          </motion.div>
+        ))}
       </motion.div>
 
       {/* Overall Progress */}
@@ -148,7 +180,7 @@ export default function Home() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="mb-12"
+        className="mb-14"
       >
         <Card padding="p-8">
           <div className="flex flex-col md:flex-row items-center gap-8">
@@ -156,26 +188,26 @@ export default function Home() {
               value={stats.topicsMastered}
               max={stats.totalTopics}
               size={120}
-              strokeWidth={10}
+              strokeWidth={8}
               color="cyan"
             />
             <div className="flex-1 text-center md:text-left">
-              <h2 className="font-display font-bold text-2xl text-white mb-2">
+              <h2 className="font-display font-bold text-2xl text-white mb-2 tracking-tight">
                 Overall Mastery
               </h2>
-              <p className="font-body text-white/60 mb-4">
+              <p className="font-body text-white/50 mb-4 leading-relaxed">
                 You've mastered {stats.topicsMastered} of {stats.totalTopics} topics.
                 {stats.topicsMastered < stats.totalTopics
                   ? ` Keep going! ${stats.totalTopics - stats.topicsMastered} more to complete your preparation.`
                   : ' Excellent work! You\'re ready for your interview!'}
               </p>
-              <div className="flex flex-wrap gap-2">
-                <span className="inline-flex items-center gap-1 text-sm text-neon-green">
+              <div className="flex flex-wrap gap-4">
+                <span className="inline-flex items-center gap-1.5 text-sm text-neon-green">
                   <Target className="w-4 h-4" />
                   {stats.flashcardsKnown} flashcards mastered
                 </span>
-                <span className="inline-flex items-center gap-1 text-sm text-neon-orange">
-                  <Clock className="w-4 h-4" />
+                <span className="inline-flex items-center gap-1.5 text-sm text-neon-cyan">
+                  <TrendingUp className="w-4 h-4" />
                   {stats.quizzesTaken} quizzes completed
                 </span>
               </div>
@@ -189,9 +221,9 @@ export default function Home() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
-        className="mb-12"
+        className="mb-14"
       >
-        <h2 className="font-display font-bold text-2xl text-white mb-6">Study Modes</h2>
+        <h2 className="font-display font-bold text-2xl text-white mb-6 tracking-tight">Study Modes</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {studyModes.map(({ title, description, icon: Icon, path, color }) => (
             <Link key={path} to={path}>
@@ -200,23 +232,19 @@ export default function Home() {
                 className="h-full flex flex-col items-center text-center"
               >
                 <div
-                  className={`
-                    w-16 h-16 rounded-xl mb-4
-                    flex items-center justify-center
-                    bg-neon-${color}/20 border border-neon-${color}/50
-                  `}
+                  className="w-14 h-14 rounded-lg mb-4 flex items-center justify-center border"
                   style={{
-                    backgroundColor: `var(--color-neon-${color})1a`,
-                    borderColor: `var(--color-neon-${color})80`,
+                    backgroundColor: `${neonColors[color]}0d`,
+                    borderColor: `${neonColors[color]}33`,
                   }}
                 >
                   <Icon
-                    className="w-8 h-8"
-                    style={{ color: `var(--color-neon-${color})` }}
+                    className="w-7 h-7"
+                    style={{ color: neonColors[color] }}
                   />
                 </div>
-                <h3 className="font-display font-bold text-xl text-white mb-2">{title}</h3>
-                <p className="font-body text-white/60">{description}</p>
+                <h3 className="font-display font-bold text-lg text-white mb-1">{title}</h3>
+                <p className="font-body text-sm text-white/40">{description}</p>
               </Card>
             </Link>
           ))}
@@ -228,10 +256,10 @@ export default function Home() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
-        className="mb-12"
+        className="mb-14"
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="font-display font-bold text-2xl text-white">Categories</h2>
+          <h2 className="font-display font-bold text-2xl text-white tracking-tight">Categories</h2>
           <Link to="/topics">
             <Button variant="ghost" size="sm">
               View All <ChevronRight className="w-4 h-4" />
@@ -252,11 +280,19 @@ export default function Home() {
                   padding="p-4"
                   className="text-center"
                 >
-                  <div className="text-3xl mb-2">{category.icon}</div>
+                  <div
+                    className="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center text-lg border"
+                    style={{
+                      backgroundColor: `${neonColors[category.color] || neonColors.cyan}0d`,
+                      borderColor: `${neonColors[category.color] || neonColors.cyan}33`,
+                    }}
+                  >
+                    {category.icon}
+                  </div>
                   <h3 className="font-body font-semibold text-white text-sm mb-1">
                     {category.name}
                   </h3>
-                  <div className="text-xs text-white/50">
+                  <div className="text-xs text-white/40">
                     {masteredCount}/{categoryTopics.length} mastered
                   </div>
                 </Card>
@@ -273,7 +309,7 @@ export default function Home() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
-          <h2 className="font-display font-bold text-2xl text-white mb-6">
+          <h2 className="font-display font-bold text-2xl text-white mb-6 tracking-tight">
             Continue Learning
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
@@ -285,12 +321,20 @@ export default function Home() {
                 <Link key={topic.id} to={`/topics/${topic.id}`}>
                   <Card glowColor={category?.color || 'cyan'} className="h-full">
                     <div className="flex items-start gap-3 mb-3">
-                      <span className="text-2xl">{topic.icon}</span>
+                      <div
+                        className="w-9 h-9 rounded-lg flex items-center justify-center text-base border shrink-0"
+                        style={{
+                          backgroundColor: `${neonColors[category?.color] || neonColors.cyan}0d`,
+                          borderColor: `${neonColors[category?.color] || neonColors.cyan}33`,
+                        }}
+                      >
+                        {topic.icon}
+                      </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-display font-semibold text-white truncate">
                           {topic.title}
                         </h3>
-                        <p className="text-sm text-white/50">{category?.name}</p>
+                        <p className="text-xs text-white/40">{category?.name}</p>
                       </div>
                     </div>
                     <ProgressBar
@@ -299,8 +343,8 @@ export default function Home() {
                       color={category?.color || 'cyan'}
                       size="sm"
                     />
-                    <p className="mt-2 text-xs text-white/40">
-                      {topicProgress.mastered ? '✓ Mastered' : 'In Progress'}
+                    <p className="mt-2 text-xs text-white/30">
+                      {topicProgress.mastered ? 'Mastered' : 'In Progress'}
                     </p>
                   </Card>
                 </Link>
@@ -316,18 +360,20 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="text-center py-12"
+          className="text-center py-16"
         >
-          <div className="text-6xl mb-4">🚀</div>
-          <h2 className="font-display font-bold text-2xl text-white mb-2">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-xl flex items-center justify-center bg-neon-cyan/10 border border-neon-cyan/20">
+            <Rocket className="w-8 h-8 text-neon-cyan" />
+          </div>
+          <h2 className="font-display font-bold text-2xl text-white mb-2 tracking-tight">
             Ready to Start?
           </h2>
-          <p className="font-body text-white/60 mb-6">
+          <p className="font-body text-white/40 mb-8 max-w-sm mx-auto">
             Begin your FPV mastery journey by exploring the topics.
           </p>
           <Link to="/topics">
-            <Button variant="primary" size="lg" icon="📚">
-              Explore Topics
+            <Button variant="primary" size="lg">
+              <BookOpen className="w-5 h-5" /> Explore Topics
             </Button>
           </Link>
         </motion.div>

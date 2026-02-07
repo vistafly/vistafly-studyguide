@@ -3,24 +3,24 @@
 /* Custom Theme */
 @theme {
   /* Fonts */
-  --font-display: 'Orbitron', monospace;
-  --font-body: 'Rajdhani', sans-serif;
+  --font-display: 'Montserrat', sans-serif;
+  --font-body: 'Montserrat', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Neon Colors */
-  --color-neon-cyan: #00fff7;
-  --color-neon-pink: #ff00ff;
-  --color-neon-yellow: #ffd700;
-  --color-neon-green: #39ff14;
-  --color-neon-orange: #ff6b00;
-  --color-neon-red: #ff3131;
+  /* VistaFly Brand Colors */
+  --color-neon-cyan: #E4D8C4;
+  --color-neon-pink: #B8A99A;
+  --color-neon-yellow: #D4C5B2;
+  --color-neon-green: #C8BAAA;
+  --color-neon-orange: #E4D8C4;
+  --color-neon-red: #A89585;
 
   /* Dark Background Colors */
-  --color-dark-900: #0a0a0f;
-  --color-dark-800: #12121a;
-  --color-dark-700: #1a1a25;
-  --color-dark-600: #252535;
-  --color-dark-500: #353545;
+  --color-dark-900: #121212;
+  --color-dark-800: #1E1E1E;
+  --color-dark-700: #2D2D2D;
+  --color-dark-600: #3A3A3A;
+  --color-dark-500: #4A4A4A;
 
   /* Animations */
   --animate-glow-pulse: glow-pulse 2s ease-in-out infinite;
@@ -29,8 +29,8 @@
   --animate-flip: flip 0.6s ease-in-out;
 
   @keyframes glow-pulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 247, 0.3); }
-    50% { box-shadow: 0 0 40px rgba(0, 255, 247, 0.6); }
+    0%, 100% { box-shadow: 0 0 20px rgba(228, 216, 196, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(228, 216, 196, 0.6); }
   }
 
   @keyframes float {
@@ -72,30 +72,30 @@ body {
 /* Grid Background Pattern */
 .grid-bg {
   background-image:
-    linear-gradient(rgba(0, 255, 247, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 247, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(228, 216, 196, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(228, 216, 196, 0.03) 1px, transparent 1px);
   background-size: 50px 50px;
 }
 
 /* Glow Effects */
 .glow-cyan {
-  box-shadow: 0 0 20px rgba(0, 255, 247, 0.4), inset 0 0 20px rgba(0, 255, 247, 0.1);
+  box-shadow: 0 0 20px rgba(228, 216, 196, 0.4), inset 0 0 20px rgba(228, 216, 196, 0.1);
 }
 
 .glow-pink {
-  box-shadow: 0 0 20px rgba(255, 0, 255, 0.4), inset 0 0 20px rgba(255, 0, 255, 0.1);
+  box-shadow: 0 0 20px rgba(184, 169, 154, 0.4), inset 0 0 20px rgba(184, 169, 154, 0.1);
 }
 
 .glow-yellow {
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4), inset 0 0 20px rgba(255, 215, 0, 0.1);
+  box-shadow: 0 0 20px rgba(212, 197, 178, 0.4), inset 0 0 20px rgba(212, 197, 178, 0.1);
 }
 
 .text-glow-cyan {
-  text-shadow: 0 0 10px rgba(0, 255, 247, 0.8), 0 0 20px rgba(0, 255, 247, 0.4);
+  text-shadow: 0 0 10px rgba(228, 216, 196, 0.8), 0 0 20px rgba(228, 216, 196, 0.4);
 }
 
 .text-glow-pink {
-  text-shadow: 0 0 10px rgba(255, 0, 255, 0.8), 0 0 20px rgba(255, 0, 255, 0.4);
+  text-shadow: 0 0 10px rgba(184, 169, 154, 0.8), 0 0 20px rgba(184, 169, 154, 0.4);
 }
 
 /* Card Styles */
@@ -108,7 +108,7 @@ body {
 
 .card:hover {
   border-color: var(--color-neon-cyan);
-  box-shadow: 0 0 30px rgba(0, 255, 247, 0.2);
+  box-shadow: 0 0 30px rgba(228, 216, 196, 0.2);
   transform: translateY(-2px);
 }
 
@@ -143,8 +143,8 @@ body {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0, 255, 247, 0.02) 2px,
-    rgba(0, 255, 247, 0.02) 4px
+    rgba(228, 216, 196, 0.02) 2px,
+    rgba(228, 216, 196, 0.02) 4px
   );
   pointer-events: none;
   z-index: 1000;

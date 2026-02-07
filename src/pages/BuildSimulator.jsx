@@ -197,7 +197,7 @@ function IntroScreen({ onStart }) {
                 onClick={() => setPickedSize(size.id)}
                 className={
                   isSelected
-                    ? 'ring-2 ring-neon-cyan shadow-[0_0_20px_rgba(0,255,247,0.2)]'
+                    ? 'ring-2 ring-neon-cyan shadow-[0_0_20px_rgba(228,216,196,0.2)]'
                     : ''
                 }
               >
