@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Home,
   BookOpen,
-  CreditCard,
   HelpCircle,
   BarChart3,
   Menu,
@@ -17,7 +16,6 @@ import { useProgress } from '../../context/ProgressContext';
 const navItems = [
   { path: '/', label: 'Home', icon: Home },
   { path: '/topics', label: 'Topics', icon: BookOpen },
-  { path: '/flashcards', label: 'Flashcards', icon: CreditCard },
   { path: '/quiz', label: 'Quiz', icon: HelpCircle },
   { path: '/simulator', label: 'Build Sim', icon: Wrench },
   { path: '/flagged', label: 'Flagged', icon: Flag },

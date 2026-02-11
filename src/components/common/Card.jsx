@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 const glowColors = {
   cyan: 'hover:border-neon-cyan hover:shadow-[0_0_30px_rgba(228,216,196,0.2)]',
   pink: 'hover:border-neon-pink hover:shadow-[0_0_30px_rgba(184,169,154,0.2)]',
-  yellow: 'hover:border-neon-yellow hover:shadow-[0_0_30px_rgba(212,197,178,0.2)]',
-  green: 'hover:border-neon-green hover:shadow-[0_0_30px_rgba(200,186,170,0.2)]',
-  orange: 'hover:border-neon-orange hover:shadow-[0_0_30px_rgba(228,216,196,0.2)]',
-  red: 'hover:border-neon-red hover:shadow-[0_0_30px_rgba(168,149,133,0.2)]',
+  yellow: 'hover:border-neon-yellow hover:shadow-[0_0_30px_rgba(212,184,106,0.2)]',
+  green: 'hover:border-neon-green hover:shadow-[0_0_30px_rgba(139,191,159,0.2)]',
+  orange: 'hover:border-neon-orange hover:shadow-[0_0_30px_rgba(212,155,106,0.2)]',
+  red: 'hover:border-neon-red hover:shadow-[0_0_30px_rgba(207,123,123,0.2)]',
 };
 
 export default function Card({

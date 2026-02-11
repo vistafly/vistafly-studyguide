@@ -447,12 +447,6 @@ export default function TopicDetail() {
                 </Button>
               )}
 
-              <Link to="/flashcards" className="block">
-                <Button variant="secondary" className="w-full">
-                  Practice Flashcards
-                </Button>
-              </Link>
-
               <Link to="/quiz" className="block">
                 <Button variant="ghost" className="w-full">
                   Take a Quiz

@@ -6,7 +6,6 @@ import {
   Clock,
   Target,
   BookOpen,
-  CreditCard,
   HelpCircle,
   TrendingUp,
   RotateCcw,
@@ -156,32 +155,6 @@ export default function Progress() {
                   color="cyan"
                 />
               </div>
-              <div className="mb-4">
-                <div className="flex justify-between mb-2">
-                  <span className="font-body text-white/60">Flashcards Known</span>
-                  <span className="font-display font-semibold text-neon-green">
-                    {stats.flashcardsKnown} / {stats.totalTopics}
-                  </span>
-                </div>
-                <ProgressBar
-                  value={stats.flashcardsKnown}
-                  max={stats.totalTopics}
-                  color="green"
-                />
-              </div>
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="font-body text-white/60">Need Practice</span>
-                  <span className="font-display font-semibold text-neon-orange">
-                    {stats.flashcardsNeedPractice}
-                  </span>
-                </div>
-                <ProgressBar
-                  value={stats.flashcardsNeedPractice}
-                  max={stats.totalTopics}
-                  color="pink"
-                />
-              </div>
             </div>
           </div>
         </Card>
@@ -297,30 +270,10 @@ export default function Progress() {
         transition={{ delay: 0.6 }}
       >
         <h2 className="font-display font-bold text-2xl text-white mb-6 flex items-center gap-2">
-          <CreditCard className="w-6 h-6 text-neon-yellow" />
+          <TrendingUp className="w-6 h-6 text-neon-yellow" />
           Suggested Actions
         </h2>
         <div className="grid md:grid-cols-3 gap-4">
-          {stats.flashcardsNeedPractice > 0 && (
-            <Link to="/flashcards">
-              <Card glowColor="orange" className="h-full">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-lg bg-neon-orange/20 flex items-center justify-center">
-                    <CreditCard className="w-6 h-6 text-neon-orange" />
-                  </div>
-                  <div>
-                    <h3 className="font-display font-semibold text-white">
-                      Practice Flashcards
-                    </h3>
-                    <p className="font-body text-sm text-white/60">
-                      {stats.flashcardsNeedPractice} cards need review
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            </Link>
-          )}
-
           {stats.topicsMastered < stats.totalTopics && (
             <Link to="/topics">
               <Card glowColor="cyan" className="h-full">

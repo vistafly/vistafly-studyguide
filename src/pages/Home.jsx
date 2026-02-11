@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   BookOpen,
-  CreditCard,
   HelpCircle,
   Clock,
   Target,
@@ -26,13 +25,6 @@ const studyModes = [
     icon: BookOpen,
     path: '/topics',
     color: 'cyan',
-  },
-  {
-    title: 'Flashcards',
-    description: 'Quick review with flip cards',
-    icon: CreditCard,
-    path: '/flashcards',
-    color: 'pink',
   },
   {
     title: 'Quiz',
@@ -133,7 +125,7 @@ export default function Home() {
           <span className="font-body text-neon-cyan text-xs tracking-widest uppercase">Technical Interview Prep</span>
         </div>
         <h1 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl text-white mb-4 tracking-tight">
-          Welcome back, <span className="text-glow-cyan text-neon-cyan">Ron</span>
+          Welcome back, <span className="text-glow-cyan text-neon-cyan">Pilot</span>
         </h1>
         <p className="font-body text-base text-white/40 max-w-xl mx-auto leading-relaxed">
           Master FPV drone technical knowledge for your upcoming interview.
@@ -202,10 +194,6 @@ export default function Home() {
                   : ' Excellent work! You\'re ready for your interview!'}
               </p>
               <div className="flex flex-wrap gap-4">
-                <span className="inline-flex items-center gap-1.5 text-sm text-neon-green">
-                  <Target className="w-4 h-4" />
-                  {stats.flashcardsKnown} flashcards mastered
-                </span>
                 <span className="inline-flex items-center gap-1.5 text-sm text-neon-cyan">
                   <TrendingUp className="w-4 h-4" />
                   {stats.quizzesTaken} quizzes completed
@@ -224,7 +212,7 @@ export default function Home() {
         className="mb-14"
       >
         <h2 className="font-display font-bold text-2xl text-white mb-6 tracking-tight">Study Modes</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
           {studyModes.map(({ title, description, icon: Icon, path, color }) => (
             <Link key={path} to={path}>
               <Card

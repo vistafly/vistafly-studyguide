@@ -5,8 +5,6 @@ import {
   Flag,
   Play,
   Trash2,
-  ChevronRight,
-  BookOpen,
   HelpCircle,
   CheckCircle,
 } from 'lucide-react';
@@ -18,25 +16,14 @@ import { FPV_TOPICS, CATEGORIES } from '../data/topics';
 export default function FlaggedQuestions() {
   const {
     progress,
-    toggleFlagTopic,
     toggleFlagQuestion,
-    isTopicFlagged,
-    isQuestionFlagged,
     getFlaggedCounts,
     clearAllFlags,
   } = useProgress();
 
-  const [activeTab, setActiveTab] = useState('all'); // 'all', 'topics', 'questions'
   const [practiceMode, setPracticeMode] = useState(false);
   const [currentPracticeIndex, setCurrentPracticeIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
-
-  // Get flagged topics (for flashcards)
-  const flaggedTopics = useMemo(() => {
-    return FPV_TOPICS.filter(topic =>
-      progress.flaggedItems.topics.includes(topic.id)
-    );
-  }, [progress.flaggedItems.topics]);
 
   // Get flagged questions (for quiz/mastery)
   const flaggedQuestions = useMemo(() => {
@@ -63,41 +50,6 @@ export default function FlaggedQuestions() {
 
   const counts = getFlaggedCounts();
 
-  // Combine all items for practice mode
-  const allPracticeItems = useMemo(() => {
-    const items = [];
-
-    // Add topics as flashcard-style items
-    flaggedTopics.forEach(topic => {
-      items.push({
-        type: 'topic',
-        id: topic.id,
-        topicId: topic.id,
-        title: topic.title,
-        icon: topic.icon,
-        category: topic.category,
-        question: topic.title,
-        answer: topic.shortAnswer,
-      });
-    });
-
-    // Add questions
-    flaggedQuestions.forEach(q => {
-      items.push({
-        type: 'question',
-        ...q,
-      });
-    });
-
-    return items;
-  }, [flaggedTopics, flaggedQuestions]);
-
-  const filteredItems = useMemo(() => {
-    if (activeTab === 'topics') return flaggedTopics.map(t => ({ type: 'topic', id: t.id, ...t }));
-    if (activeTab === 'questions') return flaggedQuestions.map(q => ({ type: 'question', ...q }));
-    return allPracticeItems;
-  }, [activeTab, flaggedTopics, flaggedQuestions, allPracticeItems]);
-
   // Practice mode handlers
   const startPractice = () => {
     setPracticeMode(true);
@@ -106,7 +58,7 @@ export default function FlaggedQuestions() {
   };
 
   const nextPracticeItem = () => {
-    if (currentPracticeIndex < allPracticeItems.length - 1) {
+    if (currentPracticeIndex < flaggedQuestions.length - 1) {
       setCurrentPracticeIndex(prev => prev + 1);
       setShowAnswer(false);
     } else {
@@ -115,14 +67,10 @@ export default function FlaggedQuestions() {
   };
 
   const removeFlagAndContinue = () => {
-    const item = allPracticeItems[currentPracticeIndex];
-    if (item.type === 'topic') {
-      toggleFlagTopic(item.id);
-    } else {
-      toggleFlagQuestion(item.topicId, item.questionIndex);
-    }
+    const item = flaggedQuestions[currentPracticeIndex];
+    toggleFlagQuestion(item.topicId, item.questionIndex);
     // Move to next, but account for the removed item
-    if (currentPracticeIndex >= allPracticeItems.length - 1) {
+    if (currentPracticeIndex >= flaggedQuestions.length - 1) {
       setPracticeMode(false);
     } else {
       setShowAnswer(false);
@@ -130,8 +78,8 @@ export default function FlaggedQuestions() {
   };
 
   // Practice Mode UI
-  if (practiceMode && allPracticeItems.length > 0) {
-    const currentItem = allPracticeItems[currentPracticeIndex];
+  if (practiceMode && flaggedQuestions.length > 0) {
+    const currentItem = flaggedQuestions[currentPracticeIndex];
     const category = CATEGORIES.find(c => c.id === currentItem.category);
 
     return (
@@ -140,7 +88,7 @@ export default function FlaggedQuestions() {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
             <span className="font-body text-white/60">
-              {currentPracticeIndex + 1} of {allPracticeItems.length} flagged items
+              {currentPracticeIndex + 1} of {flaggedQuestions.length} flagged items
             </span>
             <Button variant="ghost" size="sm" onClick={() => setPracticeMode(false)}>
               Exit Practice
@@ -148,7 +96,7 @@ export default function FlaggedQuestions() {
           </div>
           <ProgressBar
             value={currentPracticeIndex + 1}
-            max={allPracticeItems.length}
+            max={flaggedQuestions.length}
             color="orange"
           />
         </div>
@@ -157,10 +105,10 @@ export default function FlaggedQuestions() {
           <Card className="mb-6">
             {/* Item Header */}
             <div className="flex items-center gap-3 mb-4 pb-4 border-b border-dark-500">
-              <span className="text-3xl">{currentItem.icon || currentItem.topicIcon}</span>
+              <span className="text-3xl">{currentItem.topicIcon}</span>
               <div>
                 <p className="font-body text-sm text-white/60">
-                  {currentItem.type === 'topic' ? 'Flashcard' : currentItem.topicTitle}
+                  {currentItem.topicTitle}
                 </p>
                 <Badge color={category?.color || 'gray'} size="sm">
                   {category?.name}
@@ -234,21 +182,14 @@ export default function FlaggedQuestions() {
             No Flagged Items
           </h2>
           <p className="font-body text-white/60 mb-6 max-w-md mx-auto">
-            Flag questions during Quiz or MasteryCheck, or flag flashcards to review them here.
+            Flag questions during Quiz or MasteryCheck to review them here.
             Questions you answer incorrectly are automatically flagged.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/quiz">
-              <Button variant="primary" icon={<HelpCircle className="w-5 h-5" />}>
-                Take a Quiz
-              </Button>
-            </Link>
-            <Link to="/flashcards">
-              <Button variant="ghost" icon={<BookOpen className="w-5 h-5" />}>
-                Study Flashcards
-              </Button>
-            </Link>
-          </div>
+          <Link to="/quiz">
+            <Button variant="primary" icon={<HelpCircle className="w-5 h-5" />}>
+              Take a Quiz
+            </Button>
+          </Link>
         </div>
       </PageLayout>
     );
@@ -285,57 +226,24 @@ export default function FlaggedQuestions() {
         </Button>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-2 mb-6">
-        {[
-          { id: 'all', label: `All (${counts.total})` },
-          { id: 'topics', label: `Flashcards (${counts.topics})` },
-          { id: 'questions', label: `Questions (${counts.questions})` },
-        ].map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 rounded-lg font-body font-medium transition-all ${
-              activeTab === tab.id
-                ? 'bg-neon-orange/20 text-neon-orange border border-neon-orange'
-                : 'bg-dark-700 text-white/60 border border-dark-500 hover:text-white'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        <Card padding="p-4" className="text-center">
+      {/* Stats */}
+      <div className="mb-8">
+        <Card padding="p-4" className="text-center inline-block">
           <div className="font-display font-bold text-2xl text-neon-orange">
             {counts.total}
           </div>
-          <div className="font-body text-sm text-white/60">Total Flagged</div>
-        </Card>
-        <Card padding="p-4" className="text-center">
-          <div className="font-display font-bold text-2xl text-neon-cyan">
-            {counts.topics}
-          </div>
-          <div className="font-body text-sm text-white/60">Flashcards</div>
-        </Card>
-        <Card padding="p-4" className="text-center">
-          <div className="font-display font-bold text-2xl text-neon-pink">
-            {counts.questions}
-          </div>
-          <div className="font-body text-sm text-white/60">Questions</div>
+          <div className="font-body text-sm text-white/60">Flagged Questions</div>
         </Card>
       </div>
 
       {/* Flagged Items List */}
       <div className="space-y-3">
-        {filteredItems.map((item, index) => {
+        {flaggedQuestions.map((item, index) => {
           const category = CATEGORIES.find(c => c.id === item.category);
 
           return (
             <motion.div
-              key={item.type === 'topic' ? `topic-${item.id}` : `question-${item.topicId}_${item.questionIndex}`}
+              key={`question-${item.topicId}_${item.questionIndex}`}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
@@ -343,37 +251,23 @@ export default function FlaggedQuestions() {
               <Card padding="p-4">
                 <div className="flex items-start gap-4">
                   <span className="text-2xl flex-shrink-0">
-                    {item.icon || item.topicIcon}
+                    {item.topicIcon}
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <Badge
-                        color={item.type === 'topic' ? 'cyan' : 'pink'}
-                        size="sm"
-                      >
-                        {item.type === 'topic' ? 'Flashcard' : 'Question'}
-                      </Badge>
                       <Badge color={category?.color || 'gray'} size="sm">
                         {category?.name}
                       </Badge>
                     </div>
                     <p className="font-body text-white/90 line-clamp-2">
-                      {item.question || item.title}
+                      {item.question}
                     </p>
-                    {item.type === 'question' && (
-                      <p className="font-body text-sm text-white/40 mt-1">
-                        From: {item.topicTitle}
-                      </p>
-                    )}
+                    <p className="font-body text-sm text-white/40 mt-1">
+                      From: {item.topicTitle}
+                    </p>
                   </div>
                   <button
-                    onClick={() => {
-                      if (item.type === 'topic') {
-                        toggleFlagTopic(item.id);
-                      } else {
-                        toggleFlagQuestion(item.topicId, item.questionIndex);
-                      }
-                    }}
+                    onClick={() => toggleFlagQuestion(item.topicId, item.questionIndex)}
                     className="p-2 rounded-lg bg-neon-orange/20 text-neon-orange
                                hover:bg-neon-orange/30 transition-all flex-shrink-0"
                     title="Remove flag"

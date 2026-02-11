@@ -276,6 +276,24 @@ This is a key advantage often overlooked: analog VTX systems can legally and pra
             'Analog signals reflect off surfaces allowing multipath reception around obstacles, while digital signals travel only in straight lines and cannot bend around buildings like analog can.',
             'Digital systems buffer 200ms of video to smooth transmission, so when signal is blocked, the buffer empties suddenly causing instant blackout. Analog has no buffer so degradation is visible immediately.'
           ]
+        },
+        {
+          q: 'For a defense or military drone application, what video system considerations change compared to consumer FPV?',
+          a: 'Key differences: 1) Reliability over image quality - analog may be preferred for graceful degradation in contested environments. 2) Electronic warfare - digital systems are more vulnerable to jamming since they need clean packet delivery; analog degrades but keeps working. 3) Encryption - digital can encrypt video; analog cannot, making it interceptable. 4) Range/penetration - higher power analog VTX pushes through obstacles better. 5) Weight/power trade-offs favor mission capability over video quality. 6) The ideal solution bypasses RF entirely - fiber-optic control (like ARCHER FIBER) eliminates jamming and interception risks completely.',
+          distractors: [
+            'Military applications always use digital because 1080p resolution is required for target identification at range. Analog\'s 480p is insufficient for military reconnaissance. All modern defense drones use DJI O3 with AES-256 encryption built into the video link. Analog is only used in training exercises.',
+            'Defense drones use neither analog nor digital FPV - they operate autonomously using AI-based obstacle avoidance. Human pilots are too slow for combat situations where millisecond decisions matter. The video system is only used for post-mission review, not real-time piloting.',
+            'Military drones exclusively use satellite-linked video systems operating on X-band (8-12 GHz) rather than the 5.8GHz used in consumer FPV. This provides global range and encryption. The 5.8GHz consumer equipment cannot be certified for military use under ITAR regulations.'
+          ]
+        },
+        {
+          q: 'If you were building a 10" endurance drone, would you choose analog or digital video? Justify your choice.',
+          a: 'For 10" endurance, analog is the practical choice: 1) Lighter weight (17g total vs 20-30g digital) saves energy over long flights. 2) Higher power options (up to 2W) extend video range beyond digital limits. 3) Graceful degradation gives warning before signal loss - critical at long range. 4) Lower power consumption from the VTX itself. 5) Simpler, cheaper to replace in the field. Exception: if you need HD recording or are flying line-of-sight with a spotter, digital like Walksnail Nano is competitive in weight and provides superior image quality.',
+          distractors: [
+            'Digital is always better for endurance builds because the error correction in digital protocols means you can use lower transmit power and still maintain signal quality. A 400mW digital system outranges an 800mW analog system. Lower VTX power consumption directly extends flight time by 10-15%.',
+            'You should use DJI O3 for endurance builds because its 1080p recording eliminates the need for a separate action camera, saving 150g. The combined weight savings of removing the action camera makes DJI the lightest total video solution despite its heavier VTX module.',
+            'Neither analog nor digital matters for endurance - use the cheapest option. Video system weight is less than 2% of total AUW on a 10" build, so it has negligible impact on flight time. The difference between systems is less than 30 seconds of hover time.'
+          ]
         }
       ]
     }
@@ -1445,6 +1463,33 @@ set dshot_idle_value = 450-550
             'Borderline acceptable - 40% is at the upper limit of efficiency but still usable. The main issue is thermal management, not efficiency. Solutions: 1) Add motor cooling fins, 2) Reduce PID values to minimize motor corrections, 3) Use tri-blade props which run cooler than bi-blades at the same thrust.',
             'Good - 40% throttle leaves 60% headroom for climbing and wind resistance, which is ideal for long-range missions. Lower hover throttle would mean undersized motors that struggle in gusty conditions. The only change would be switching to higher C-rating batteries to handle the sustained 40% current draw.'
           ]
+        },
+        {
+          q: 'Your 10" hover build only achieves 15 minutes instead of the expected 35. Walk through your troubleshooting process.',
+          a: 'Systematic troubleshooting: 1) Check AUW - extra weight increases hover power dramatically (10g = ~1% more power). 2) Verify hover throttle in blackbox - if above 35%, motors aren\'t in efficiency sweet spot. 3) Battery health - degraded cells have lower actual capacity than rated. 4) PID tune - aggressive PIDs (especially high D) waste energy on constant corrections. 5) Motor/prop mismatch - wrong KV or pitch wastes energy. 6) Mechanical issues - bent props, tight bearings, unbalanced motors create parasitic drag. 7) Wind conditions - even light wind dramatically increases power consumption vs calm indoor hover. 8) Check if any motors are running significantly hotter than others (indicates mechanical or electrical issue).',
+          distractors: [
+            'The most likely cause is ESC timing set too high, causing motor desync at low throttle. Reset ESC timing to 15° and recalibrate. Also check that motor direction is correct - reversed motors lose 30% efficiency. Finally, verify prop direction (leading edge forward) and balance all props on a balancer.',
+            'Check if GPS rescue mode is enabled, as it constantly adjusts position and altitude consuming extra power. Disable all autonomous features for pure hover testing. Also verify that OSD refresh rate isn\'t set to 60Hz (use 30Hz to save FC power) and disable blackbox logging which draws 100mA from the FC.',
+            'The problem is almost certainly battery voltage sag. Li-ion cells sag more than LiPo under load, and the FC cuts power early to protect cells. Use LiHV (high-voltage) Li-ion cells that start at 4.35V instead of 4.2V, giving 8% more energy. Also, discharge the pack to only 20% instead of 30% to access more capacity.'
+          ]
+        },
+        {
+          q: 'Could you use a LiPo battery instead of Li-ion for a 10" hover build? What would change?',
+          a: 'Yes, but flight time drops significantly. A comparable 6S 1500mAh LiPo weighs ~250g with 33Wh energy vs 6S 4200mAh Li-ion at ~420g with 93Wh energy. Despite Li-ion being 170g heavier, it has 2.8x more energy. LiPo advantage: higher discharge rate for aggressive maneuvers and lighter weight if you need short but powerful flights. LiPo disadvantage: much lower energy density (126 Wh/kg vs 221 Wh/kg). You\'d only choose LiPo if you need both hover AND aggressive maneuvering capability, accepting roughly 40-50% of the Li-ion hover time.',
+          distractors: [
+            'No, LiPo is not recommended for 10" builds because the high discharge rates create voltage spikes that damage the larger motors\' windings. Li-ion\'s current limiting protects the motors from overcurrent. If you must use LiPo, add inline resistors to limit current flow to motor-safe levels.',
+            'LiPo would actually provide longer hover time due to its flatter voltage curve. Li-ion drops from 4.2V to 3.0V during discharge while LiPo maintains 3.7V consistently. The more consistent voltage means more efficient motor operation. Li-ion is preferred only for cost reasons, not performance.',
+            'You could use LiPo but would need to change to higher KV motors to compensate for LiPo\'s lower voltage under load. LiPo sags to 3.3V/cell under hover load (19.8V total) while Li-ion maintains 3.6V (21.6V). The 1.8V difference requires ~10% higher KV to maintain the same RPM and thrust.'
+          ]
+        },
+        {
+          q: 'Why specifically bi-blade props over tri-blade for a hover-focused 10" build?',
+          a: 'At hover, you need steady, efficient lift - not agility. Bi-blade advantages: 1) Each blade operates in cleaner air with less wake interference from the other blade, maximizing efficiency. 2) Less total blade drag means lower current draw at the same thrust. 3) Quieter operation from reduced blade interaction. 4) The efficiency advantage of 2-blade over 3-blade is roughly 15-20% at hover throttle levels. Tri-blade makes sense when you need more thrust or agility (freestyle, racing), but for pure hover endurance, that extra blade just wastes energy. The math: 3-blade produces ~20% more thrust but draws ~25% more current - a net loss for efficiency.',
+          distractors: [
+            'Bi-blade props are preferred because 3-blade props create asymmetric vibration patterns on 10" builds due to the odd blade count. The vibration causes gyro noise that forces higher filtering, adding latency. Two blades create symmetric forces that cancel out, resulting in cleaner gyro data and better PID performance.',
+            'The choice is purely about weight. Each extra blade adds 5-8g, and with 4 props that\'s 20-32g of extra rotating mass. The motor must accelerate this extra mass during every PID correction, wasting energy. The thrust advantage of 3 blades is irrelevant because hover requires constant thrust, not thrust changes.',
+            'Bi-blade is chosen because 10" tri-blade props are not widely available from reputable manufacturers. The market focuses on bi-blade for 10" since that\'s what long-range builders use. Tri-blade would actually be slightly more efficient due to reduced tip speed per blade, but supply constraints make bi-blade the practical choice.'
+          ]
         }
       ]
     }
@@ -1818,6 +1863,33 @@ Always check frame specs for maximum prop clearance!
             '7035-2: Racing - high pitch-to-diameter ratio (35/70=0.5) indicates speed optimization, 2 blades reduce drag at high speed. 51466-3: Long-range - mid-size props balance efficiency and control, 3 blades are most versatile. 5040-4: Freestyle - 4 blades give aggressive thrust for tricks, medium pitch for control. 3018-2: Cinematic - tiny props create minimal wind noise for clean audio recording.',
             '7035-2: Heavy lift - 70mm chord width provides maximum blade area for carrying payloads, 2 blades reduce torque requirements. 51466-3: Indoor proximity - the 5.14" diameter fits tight spaces with margin for error, 3 blades for control. 5040-4: Racing - 4 blades overcome prop wash in tight racing lines. 3018-2: FPV racing micro class - 30mm is regulation size, 1.8" pitch for quick acceleration.'
           ]
+        },
+        {
+          q: 'How does propeller material affect flight performance? Compare carbon fiber, reinforced nylon, and polycarbonate.',
+          a: 'Carbon fiber: Stiffest and most efficient - blade doesn\'t flex under load so all energy goes to thrust. Lightest per unit strength, but brittle and shatters on impact. Best for efficiency builds where crashes are rare. Reinforced nylon (glass-filled): Good balance of stiffness, durability, and cost. Flexes slightly but maintains shape - best all-around choice for most pilots. Polycarbonate: Most flexible and crash-durable, but flex loses efficiency at high RPM as blade deforms under load, wasting energy as vibration. For a 10" efficiency build, choose carbon or glass-nylon. For learning/crashing, polycarbonate saves money on replacements.',
+          distractors: [
+            'Carbon fiber props are heavier than nylon due to the resin matrix, but their superior stiffness compensates. Polycarbonate is actually the lightest material and most efficient, but breaks easily. Reinforced nylon is the heaviest option, chosen purely for crash resistance in beginner builds.',
+            'All three materials perform identically in terms of efficiency and thrust - the differences are purely about durability and cost. Material choice is aesthetic preference for most pilots. Carbon fiber props are chosen for their look, not performance, since modern nylon composites match carbon in stiffness.',
+            'Polycarbonate props are most efficient because their flexibility absorbs motor vibration, resulting in smoother thrust output. Carbon fiber transmits vibrations to the frame causing gyro noise. Reinforced nylon is a poor compromise that offers neither the vibration damping of PC nor the lightweight of carbon.'
+          ]
+        },
+        {
+          q: 'What is the difference between a bullnose tip and a standard rounded tip on a propeller?',
+          a: 'Bullnose (blunt/cut) tips concentrate thrust at the blade tip, producing maximum thrust within a given diameter - they effectively act like a slightly larger prop. They draw more current and are louder due to aggressive tip vortices. Standard rounded tips reduce tip vortices, making them quieter and more efficient but generating less thrust at the same RPM. Bullnose is good for tight frames where you can\'t fit larger diameter props, or when you need maximum thrust from limited space. For efficiency builds, standard or rounded tips are preferred.',
+          distractors: [
+            'Bullnose tips are designed primarily for crash resistance - the blunt shape prevents blade tip damage during ground strikes. Standard tips break more easily on impact. The thrust and efficiency differences are negligible; the choice is purely about durability for pilots who frequently crash.',
+            'Bullnose props generate identical thrust to standard tips but at lower RPM due to the increased blade area at the tip. This makes them more efficient overall because the motor works less for the same thrust. They are louder only because of the wider chord, not because of aerodynamic differences.',
+            'Standard rounded tips are less efficient than bullnose because air slips off the tapered end, creating wasted downwash. Bullnose tips capture 15% more air per rotation with their wider surface. Standard tips are only used on racing props where the reduced weight from less material at the tip improves RPM response.'
+          ]
+        },
+        {
+          q: 'If you increase prop diameter by 1 inch but decrease pitch by 1 inch (e.g., switching from 5x4.5 to 6x3.5), what changes?',
+          a: 'Major shift toward efficiency: 1) Larger diameter means 44% more disc area, moving more air at lower velocity - fundamentally more efficient for hover. 2) Lower pitch means less aggressive blade angle, reducing current draw at hover throttle. 3) Combined effect: much better hover efficiency but lower top speed. 4) Requires more motor torque (larger stator or lower KV) to swing the bigger prop. 5) Frame must accommodate the larger prop. This is exactly the trade-off between a racing setup (5x4.5) and a long-range setup (6x3.5) - sacrificing speed for endurance.',
+          distractors: [
+            'The effects cancel out. Larger diameter increases thrust while lower pitch decreases it proportionally. A 6x3.5 produces the same thrust as a 5x4.5 because the diameter-pitch product (6×3.5=21 vs 5×4.5=22.5) is nearly identical. The only real difference is the prop weighs more, slightly reducing efficiency.',
+            'Increasing diameter while decreasing pitch creates dangerous resonance issues. The longer blade at lower pitch enters a flutter zone where the blade oscillates between its natural frequency and the motor frequency. This causes structural failure at mid-throttle. Props should maintain consistent diameter-to-pitch ratios within 15%.',
+            'The larger diameter with lower pitch makes the drone less controllable because the lower pitch reduces authority during maneuvers. The prop can\'t "grip" the air during rolls and flips, making it sluggish and unresponsive. This combination should only be used on GPS-stabilized platforms where manual control isn\'t needed.'
+          ]
         }
       ]
     }
@@ -2021,6 +2093,33 @@ With RPM filtering handling motor noise, you can:
             'You can lower gyro lowpass cutoffs (e.g., from 150Hz to 100Hz) and increase dynamic notch bandwidth because RPM filtering only works above 300Hz. Lower cutoffs ensure no motor noise leaks through the gaps. You can also reduce D-term by 20% since RPM filtering adds 2ms latency that D needs to compensate for.',
             'You can disable the D-term lowpass entirely and set gyro filtering to "OFF" since RPM filtering replaces all other filters. The FC uses the RPM data to apply one unified filter that handles everything. This frees up CPU cycles, allowing you to run 8kHz PID loops on F4 boards.',
             'You can increase anti-gravity gain and lower I-term because RPM filtering eliminates the high-frequency oscillation that I normally fights. Keeping I-term high with RPM filtering causes integral windup during throttle blips. The cleaner signal means feed-forward can be reduced by 30% as well.'
+          ]
+        },
+        {
+          q: 'What happens if you set motor_poles incorrectly in Betaflight?',
+          a: 'The notch filters will be placed at wrong frequencies. motor_poles determines conversion from eRPM to actual RPM (eRPM / pole pairs). If poles are set too high, calculated RPM will be too low, placing filters below actual noise frequencies. If too low, filters sit above the noise. Motor noise passes through unfiltered, defeating the purpose entirely. Symptoms: vibration, hot motors, poor flight despite RPM filtering being "enabled." Always verify pole count from motor specs - typically 14 for 22xx motors, 12 for some smaller motors.',
+          distractors: [
+            'Incorrect motor_poles causes the ESC to send wrong throttle commands, making motors spin at incorrect speeds. The poles setting calibrates the ESC-to-motor communication protocol. Wrong values can cause motor desync, sudden stops, or runaway motors. Always match the setting to your specific ESC firmware version.',
+            'Wrong motor_poles only affects the RPM readout in the OSD and blackbox logs - it doesn\'t change filter behavior. The filters work on raw eRPM data directly without using the poles conversion. The setting is cosmetic for logging accuracy. Incorrect values show wrong RPM numbers but filtering works normally.',
+            'Setting motor_poles too high overloads the FC processor because it tries to generate more notch filters than needed. Each additional "pole" creates an extra filter instance. Setting 14 poles on a 12-pole motor creates 2 phantom filters that waste CPU cycles and can cause PID loop timing issues on F4 boards.'
+          ]
+        },
+        {
+          q: 'What is bidirectional DShot and why is it essential for RPM filtering?',
+          a: 'Standard DShot is one-way: the FC sends throttle commands to the ESC. Bidirectional DShot adds a return channel where the ESC reports motor eRPM back to the FC after each command cycle. This real-time RPM data lets the FC calculate exact motor noise frequencies and place notch filters precisely. Without bidirectional DShot, the FC has no way to know actual motor RPM - it would have to guess from throttle position, which is wildly inaccurate due to varying loads, wind, prop size, and maneuvers.',
+          distractors: [
+            'Bidirectional DShot doubles the communication speed between FC and ESC, allowing 48kHz updates instead of 24kHz. The faster updates mean smoother motor control and less noise generation. RPM filtering needs the faster protocol because standard DShot cannot sample fast enough to detect motor frequencies above 400Hz.',
+            'Bidirectional DShot sends motor commands simultaneously to all 4 ESCs in sync, rather than sequentially. This synchronized firing eliminates inter-motor interference that creates the noise RPM filtering targets. Without sync, the 4 motors create beat frequencies that move too fast for static filters to track.',
+            'Bidirectional DShot uses error correction (CRC checksums) on motor commands that standard DShot lacks. The error correction prevents signal corruption that causes motor glitches. RPM filtering requires clean signals because glitches look like noise spikes that would cause the filter to misplace notch frequencies.'
+          ]
+        },
+        {
+          q: 'How would you verify that RPM filtering is actually working on your build?',
+          a: '1) In Motors tab (props OFF!), spin motors to ~20% - you should see RPM values updating for each motor in real-time. If RPM shows 0, bidirectional DShot isn\'t working. 2) Check blackbox logs - compare gyro noise spectrum with RPM filter on vs off. You should see clean notches cut at motor frequencies. 3) In the Betaflight CLI, run "status" to verify RPM filter is active. 4) Physical test: the quad should feel noticeably smoother and motors should run cooler. 5) In the Configurator\'s gyro graph, noise at motor frequencies should be dramatically reduced.',
+          distractors: [
+            'RPM filtering is verified by checking the debug_mode = RPM_FILTER output in the OSD. The OSD displays a real-time frequency graph showing where notch filters are placed. If the graph shows flat lines, the filter isn\'t working. You can also verify by checking ESC temperature - RPM filtering reduces ESC heat by 30%.',
+            'Run the self-test command "rpm_filter_test" in CLI. This spins each motor individually and verifies the filter tracks correctly. The test takes 30 seconds and outputs a pass/fail for each motor. If any motor fails, check wiring and ESC firmware. The self-test should be run after every firmware update.',
+            'RPM filtering works automatically with no verification needed once dshot_bidir = ON. The only way it fails is if the ESC firmware is incompatible. There is no way to visualize or confirm it\'s working in real-time - you can only infer from improved flight characteristics and motor temperatures.'
           ]
         }
       ]
@@ -2298,6 +2397,24 @@ They're well-tested for most builds.
             'This indicates a motor timing or desync issue in the ESC, not a PID problem. The FC is outputting correct commands (clean gyro) but ESCs are responding incorrectly. Recalibrate ESC timing or update ESC firmware.',
             'Clean gyro with motor oscillation means the gyro soft mount is too soft, isolating the FC from airframe vibration while motors resonate on the frame. Reduce soft mount dampening or hard-mount the FC.'
           ]
+        },
+        {
+          q: 'How does having RPM filtering enabled change your approach to PID tuning?',
+          a: 'RPM filtering gives you a cleaner gyro signal, which unlocks more tuning headroom: 1) You can raise D-term higher without hot motors because noise that D would amplify is already removed. 2) Higher D means better propwash handling. 3) You can raise gyro lowpass cutoffs, reducing latency and making the quad feel more connected. 4) You can push P higher before oscillation appears because the cleaner signal has less noise to excite resonance. 5) Overall, RPM filtering lets you run a more aggressive tune with better flight characteristics and cooler motors. Without RPM filtering, you\'re limited by noise, not by the PID controller itself.',
+          distractors: [
+            'RPM filtering doesn\'t change PID tuning approach - it only affects filter settings. PIDs should be tuned identically regardless of RPM filtering status. The filtering runs independently of the PID loop and only cleans up the gyro signal for logging purposes. Tune PIDs first, then optimize filters separately.',
+            'With RPM filtering enabled, you should lower all PID values by 20-30% because the filter introduces 5ms of additional latency. Higher PIDs would cause overshoot due to this delay. Specifically, reduce D by 30% since RPM filtering already provides damping that overlaps with D-term function.',
+            'RPM filtering requires completely different PID values. Start from scratch with P=30, I=60, D=15 as the new baseline. The standard defaults assume no RPM filtering and are too aggressive when combined with it. Using default PIDs with RPM filtering causes a feedback loop between the filter and D-term.'
+          ]
+        },
+        {
+          q: 'You\'re tuning a new 10" build. The quad feels floaty and doesn\'t hold its angle well in wind. Which PID term do you adjust first and why?',
+          a: 'Increase P first. Floaty feel with poor angle hold indicates P is too low - the controller isn\'t correcting errors aggressively enough. On a 10" build, the larger props have more inertia, so the FC needs stronger corrections (higher P) to overcome that inertia and hold attitude. Start by increasing P in 5-point increments until the quad feels locked-in but before oscillation appears. If it still drifts in wind after P is adequate, increase I to eliminate steady-state error from constant wind force.',
+          distractors: [
+            'Increase D first. The floaty feeling is caused by overshoot at the end of corrections - the quad corrects past its target and wobbles. D dampens this overshoot, making the quad feel more planted. On 10" builds, the heavy props create momentum that D needs to brake. Start with D at 50+ for large builds.',
+            'Increase Feed Forward first. Floaty feel means the motors aren\'t responding quickly enough to stick inputs. FF adds direct stick-to-motor response bypassing the PID loop entirely. On 10" builds, FF of 200+ is needed because the large prop inertia delays motor response. This gives instant, connected feel.',
+            'Lower I first. On 10" builds, the default I-term is too aggressive and fights against attitude changes including your own inputs. The wind sensitivity is caused by I-term accumulating during gusts and then over-correcting. Reduce I to 40-50 for large builds to prevent this wind hunting behavior.'
+          ]
         }
       ]
     }
@@ -2532,6 +2649,33 @@ Racers often sacrifice efficiency for:
             'Efficiency peaks at 50-70% because that\'s where the ESC\'s PWM duty cycle is most linear. At low throttle, PWM pulse gaps create current spikes during transitions. At high throttle, duty cycle approaches 100% where the ESC can\'t regulate properly. The mid-range provides the cleanest power delivery with minimal switching losses.',
             'The peak occurs because prop efficiency and motor efficiency have opposite curves. Motors are most efficient at 100% while props are most efficient at 0% RPM. The 50-70% range represents the mathematical intersection where combined system efficiency is maximized. Below this range, prop losses dominate; above it, motor losses dominate.',
             'Motor efficiency peaks at 50-70% due to bearing friction characteristics. Bearings have static friction at low RPM and dynamic friction at high RPM. The mid-range minimizes total friction loss. Additionally, the motor\'s internal fan provides optimal cooling airflow at these speeds, preventing thermal derating.'
+          ]
+        },
+        {
+          q: 'At what point does choosing a larger motor become counterproductive for efficiency?',
+          a: 'When the weight penalty of larger motors exceeds the efficiency gain from lower throttle operation. Going from 2207 to 2812 adds ~180g across 4 motors, requiring significantly more thrust just to hover. If bigger motors push AUW so high that hover throttle INCREASES above 35% despite the more efficient motors, you\'ve gone too far. The sweet spot: choose the motor size where hover sits at 25-35% throttle for your total AUW including the motors\' own weight. For 5" builds, 2207 is the sweet spot. For 7", 2806.5. For 10", 2812. Going beyond those for each frame size hits diminishing returns.',
+          distractors: [
+            'Larger motors never become counterproductive for efficiency. The I²R relationship always favors bigger motors because heat losses scale with current squared. Even if weight increases, the exponential reduction in heat loss always exceeds the linear increase in thrust requirements. The only reason to use smaller motors is cost or frame compatibility.',
+            'The tipping point occurs when motor diameter exceeds 20% of prop diameter. A 28mm stator on a 5" (127mm) prop creates aerodynamic interference between the motor bell and prop root. Keep stator diameter below 15% of prop diameter for optimal efficiency. This is why 2207 works on 5" but 2812 does not.',
+            'Larger motors become counterproductive when they exceed the ESC\'s continuous current rating at hover. A 2812 motor draws 8-10A at idle due to the larger stator mass, which exceeds a 35A ESC\'s thermal capacity during extended hover. The ESC becomes the efficiency bottleneck, not the motor.'
+          ]
+        },
+        {
+          q: 'How would your motor selection strategy differ between a 5" racing build and a 10" endurance build?',
+          a: 'Opposite philosophies. Racing 5": Prioritize low weight and fast response - choose 2205-2207 with high KV (1900-2400KV). Lighter motors with lower rotational inertia enable quicker direction changes. Races are 2-3 minutes so efficiency is irrelevant. Endurance 10": Prioritize efficiency and torque - choose 2806-2812 with low KV (900-1300KV). Heavier but massively more efficient motors that hover at 25-35% throttle. Pair with Li-ion battery and low-pitch bi-blade props. Racing builds waste energy for speed; endurance builds conserve energy for time. Completely different design goals drive completely different choices.',
+          distractors: [
+            'Both builds should use the same motor selection principles - choose the most efficient motor available. The only difference is prop size: 5" racing uses 2207 1700KV and 10" uses 2812 1700KV. Same KV, different stators matched to prop size. The approach is identical, only the scale changes.',
+            'Racing 5": Use the largest possible motor (2306-2307) for maximum power, paired with highest KV (2600+) and aggressive props. Endurance 10": Use the smallest motor that can maintain hover (2207 at low KV) to minimize weight and maximize flight time. Racing goes big on motors, endurance goes small.',
+            'The strategy is identical but inverted: racing builds hover at 70-80% throttle with undersized motors to maximize top speed, while endurance builds hover at 70-80% with oversized motors to maximize control authority in wind. Both target the same 70-80% hover throttle operating point for different reasons.'
+          ]
+        },
+        {
+          q: 'Explain how the I²R heat loss formula directly impacts your decision between a larger vs smaller motor for an efficiency build.',
+          a: 'Heat loss (wasted energy) = I² × R. Current is SQUARED, so small reductions in current yield large efficiency gains. A larger motor produces the same thrust at lower current because it has more torque per amp (larger stator, lower KV). Example: if a smaller motor needs 15A to hover and a larger one needs 9A (same resistance), heat loss drops from 225R to 81R watts - a 64% reduction in wasted energy just from halving current by 40%. This is why "slightly oversized motors at partial throttle" is the golden rule for efficiency. The current squared relationship makes this effect dramatic.',
+          distractors: [
+            'The I²R formula shows that resistance (R) is the dominant factor, not current (I). Larger motors have more copper windings which means higher R. The increased resistance actually increases losses: a 2812 with 0.15Ω at 9A loses 12.15W, while a 2207 with 0.08Ω at 15A loses 18W. The 2812 wins only because the R difference is smaller than the I difference in this specific case.',
+            'I²R applies to DC circuits, but motors use AC switching through the ESC. In PWM-driven motors, the actual loss formula is I × V_drop × duty_cycle, which is linear with current, not squared. The squared relationship only applies during motor startup. At steady hover, motor losses scale linearly with current draw.',
+            'The I²R formula is misleading for motor selection because R changes with temperature. Larger motors run cooler (lower R) while smaller motors run hotter (higher R). The temperature-dependent resistance means the real-world efficiency gap between motor sizes is 3-5× larger than I²R alone would predict. Always use thermal modeling, not simple I²R calculations.'
           ]
         }
       ]

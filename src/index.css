@@ -10,10 +10,10 @@
   /* VistaFly Brand Colors */
   --color-neon-cyan: #E4D8C4;
   --color-neon-pink: #B8A99A;
-  --color-neon-yellow: #D4C5B2;
-  --color-neon-green: #C8BAAA;
-  --color-neon-orange: #E4D8C4;
-  --color-neon-red: #A89585;
+  --color-neon-yellow: #D4B86A;
+  --color-neon-green: #8BBF9F;
+  --color-neon-orange: #D49B6A;
+  --color-neon-red: #CF7B7B;
 
   /* Dark Background Colors */
   --color-dark-900: #121212;
@@ -87,7 +87,7 @@ body {
 }
 
 .glow-yellow {
-  box-shadow: 0 0 20px rgba(212, 197, 178, 0.4), inset 0 0 20px rgba(212, 197, 178, 0.1);
+  box-shadow: 0 0 20px rgba(212, 184, 106, 0.4), inset 0 0 20px rgba(212, 184, 106, 0.1);
 }
 
 .text-glow-cyan {

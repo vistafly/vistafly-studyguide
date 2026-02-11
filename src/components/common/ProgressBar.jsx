@@ -72,8 +72,8 @@ export function CircularProgress({
   const colors = {
     cyan: '#E4D8C4',
     pink: '#B8A99A',
-    green: '#C8BAAA',
-    yellow: '#D4C5B2',
+    green: '#8BBF9F',
+    yellow: '#D4B86A',
   };
 
   return (

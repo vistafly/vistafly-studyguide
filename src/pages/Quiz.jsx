@@ -571,7 +571,7 @@ export default function Quiz() {
         </div>
 
         {/* Question Card */}
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <motion.div
             key={currentIndex}
             initial={{ opacity: 0, x: 50 }}
@@ -579,10 +579,10 @@ export default function Quiz() {
             exit={{ opacity: 0, x: -50 }}
           >
             <Card className="mb-6">
-              {/* Topic Info */}
-              <div className="flex items-center justify-between mb-4 pb-4 border-b border-dark-500">
+              {/* Topic Info + Question */}
+              <div className="flex items-center justify-between mb-3 pb-3 border-b border-dark-500">
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl">{currentQuestion.topicIcon}</span>
+                  <span className="text-2xl">{currentQuestion.topicIcon}</span>
                   <div>
                     <p className="font-body text-sm text-white/60">{currentQuestion.topicTitle}</p>
                     <Badge color={questionCategory?.color || 'gray'} size="sm">
@@ -610,18 +610,18 @@ export default function Quiz() {
               </div>
 
               {/* Question */}
-              <h2 className="font-display font-bold text-xl text-white mb-6">
+              <h2 className="font-display font-bold text-lg md:text-xl text-white mb-4">
                 {currentQuestion.question}
               </h2>
 
-              {/* Multiple Choice Options */}
-              <div className="space-y-3 mb-6">
+              {/* Multiple Choice Options — 2-column grid on wide screens */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-4">
                 {currentQuestion.options.map((option, index) => {
                   const isSelected = selectedOption === index;
                   const showResult = hasSubmitted;
                   const isCorrect = option.isCorrect;
 
-                  let optionClasses = 'w-full text-left p-4 rounded-lg border-2 transition-all duration-200 ';
+                  let optionClasses = 'w-full text-left px-3 py-2.5 rounded-lg border transition-all duration-200 ';
 
                   if (showResult) {
                     if (isCorrect) {
@@ -648,30 +648,30 @@ export default function Quiz() {
                       whileHover={!hasSubmitted ? { scale: 1.01 } : {}}
                       whileTap={!hasSubmitted ? { scale: 0.99 } : {}}
                     >
-                      <div className="flex items-start gap-3">
-                        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                      <div className="flex items-start gap-2.5">
+                        <div className={`flex-shrink-0 w-7 h-7 rounded-md border flex items-center justify-center text-xs font-bold ${
                           showResult && isCorrect
-                            ? 'bg-neon-green text-dark-900'
+                            ? 'bg-neon-green/20 text-neon-green border-neon-green/40'
                             : showResult && isSelected && !isCorrect
-                            ? 'bg-neon-red text-dark-900'
+                            ? 'bg-neon-red/20 text-neon-red border-neon-red/40'
                             : isSelected
-                            ? 'bg-neon-cyan text-dark-900'
-                            : 'bg-dark-600 text-white/60'
+                            ? 'bg-neon-cyan/20 text-neon-cyan border-neon-cyan/40'
+                            : 'bg-dark-600 text-white/50 border-dark-500'
                         }`}>
                           {showResult && isCorrect ? (
-                            <CheckCircle className="w-5 h-5" />
+                            <CheckCircle className="w-4 h-4" />
                           ) : showResult && isSelected && !isCorrect ? (
-                            <XCircle className="w-5 h-5" />
+                            <XCircle className="w-4 h-4" />
                           ) : (
                             String.fromCharCode(65 + index)
                           )}
                         </div>
-                        <span className={`font-body text-sm leading-relaxed ${
+                        <span className={`font-body text-sm leading-snug ${
                           showResult && isCorrect
                             ? 'text-neon-green'
                             : showResult && isSelected && !isCorrect
                             ? 'text-neon-red'
-                            : 'text-white/90'
+                            : 'text-white/80'
                         }`}>
                           {option.text}
                         </span>
@@ -695,28 +695,28 @@ export default function Quiz() {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-4"
+                    className="space-y-3"
                   >
                     {/* Feedback */}
-                    <div className={`p-4 rounded-lg ${
+                    <div className={`p-3 rounded-lg ${
                       answers[currentIndex]?.isCorrect
                         ? 'bg-neon-green/10 border border-neon-green/30'
                         : 'bg-neon-red/10 border border-neon-red/30'
                     }`}>
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center gap-2 mb-1.5">
                         {answers[currentIndex]?.isCorrect ? (
                           <>
-                            <CheckCircle className="w-5 h-5 text-neon-green" />
-                            <span className="font-display font-bold text-neon-green">Correct!</span>
+                            <CheckCircle className="w-4 h-4 text-neon-green" />
+                            <span className="font-display font-bold text-sm text-neon-green">Correct!</span>
                           </>
                         ) : (
                           <>
-                            <XCircle className="w-5 h-5 text-neon-red" />
-                            <span className="font-display font-bold text-neon-red">Incorrect</span>
+                            <XCircle className="w-4 h-4 text-neon-red" />
+                            <span className="font-display font-bold text-sm text-neon-red">Incorrect</span>
                           </>
                         )}
                       </div>
-                      <p className="font-body text-sm text-white/80">
+                      <p className="font-body text-sm text-white/80 leading-relaxed">
                         <strong>Full explanation:</strong> {currentQuestion.fullAnswer}
                       </p>
                     </div>

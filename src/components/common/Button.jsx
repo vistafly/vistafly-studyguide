@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 const variants = {
   primary: 'bg-neon-cyan/20 border-neon-cyan text-neon-cyan hover:bg-neon-cyan/30 hover:shadow-[0_0_20px_rgba(228,216,196,0.4)]',
   secondary: 'bg-neon-pink/20 border-neon-pink text-neon-pink hover:bg-neon-pink/30 hover:shadow-[0_0_20px_rgba(184,169,154,0.4)]',
-  success: 'bg-neon-green/20 border-neon-green text-neon-green hover:bg-neon-green/30 hover:shadow-[0_0_20px_rgba(200,186,170,0.4)]',
-  warning: 'bg-neon-orange/20 border-neon-orange text-neon-orange hover:bg-neon-orange/30 hover:shadow-[0_0_20px_rgba(228,216,196,0.4)]',
-  danger: 'bg-neon-red/20 border-neon-red text-neon-red hover:bg-neon-red/30 hover:shadow-[0_0_20px_rgba(168,149,133,0.4)]',
+  success: 'bg-neon-green/20 border-neon-green text-neon-green hover:bg-neon-green/30 hover:shadow-[0_0_20px_rgba(139,191,159,0.4)]',
+  warning: 'bg-neon-orange/20 border-neon-orange text-neon-orange hover:bg-neon-orange/30 hover:shadow-[0_0_20px_rgba(212,155,106,0.4)]',
+  danger: 'bg-neon-red/20 border-neon-red text-neon-red hover:bg-neon-red/30 hover:shadow-[0_0_20px_rgba(207,123,123,0.4)]',
   ghost: 'bg-transparent border-dark-500 text-white/70 hover:border-neon-cyan hover:text-neon-cyan',
 };
 

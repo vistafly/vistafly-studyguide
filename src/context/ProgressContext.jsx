@@ -17,7 +17,6 @@ const getInitialState = () => ({
   quizHistory: [],
   interviewHistory: [],
   flaggedItems: {
-    topics: [],      // Array of topicIds (for Flashcards)
     questions: [],   // Array of "topicId_questionIndex" strings (for Quiz/MasteryCheck)
   },
   savedBuilds: [],   // Array of saved drone builds from the simulator
@@ -41,7 +40,6 @@ const deepMerge = (initial, loaded) => {
     quizHistory: loaded.quizHistory || initial.quizHistory,
     interviewHistory: loaded.interviewHistory || initial.interviewHistory,
     flaggedItems: {
-      topics: loaded.flaggedItems?.topics || initial.flaggedItems.topics,
       questions: loaded.flaggedItems?.questions || initial.flaggedItems.questions,
     },
     savedBuilds: loaded.savedBuilds || initial.savedBuilds,
@@ -171,20 +169,6 @@ export function ProgressProvider({ children }) {
     }));
   };
 
-  const setFlashcardConfidence = (topicId, confidence) => {
-    setProgress(prev => ({
-      ...prev,
-      topics: {
-        ...prev.topics,
-        [topicId]: {
-          ...prev.topics[topicId],
-          flashcardConfidence: confidence,
-          lastFlashcardDate: new Date().toISOString(),
-        },
-      },
-    }));
-  };
-
   const addQuizScore = (category, score, totalQuestions) => {
     setProgress(prev => ({
       ...prev,
@@ -241,7 +225,6 @@ export function ProgressProvider({ children }) {
     return progress.topics[topicId] || {
       viewed: false,
       mastered: false,
-      flashcardConfidence: null,
       quizScores: [],
       notes: '',
     };
@@ -265,8 +248,6 @@ export function ProgressProvider({ children }) {
             progress.quizHistory.length
           )
         : 0,
-      flashcardsKnown: topics.filter(t => t.flashcardConfidence === 'know').length,
-      flashcardsNeedPractice: topics.filter(t => t.flashcardConfidence === 'practice').length,
     };
   };
 
@@ -277,23 +258,6 @@ export function ProgressProvider({ children }) {
   };
 
   // Flag management functions
-  const toggleFlagTopic = (topicId) => {
-    setProgress(prev => {
-      const currentFlags = prev.flaggedItems.topics;
-      const isFlagged = currentFlags.includes(topicId);
-
-      return {
-        ...prev,
-        flaggedItems: {
-          ...prev.flaggedItems,
-          topics: isFlagged
-            ? currentFlags.filter(id => id !== topicId)
-            : [...currentFlags, topicId],
-        },
-      };
-    });
-  };
-
   const toggleFlagQuestion = (topicId, questionIndex) => {
     const questionId = `${topicId}_${questionIndex}`;
 
@@ -334,10 +298,6 @@ export function ProgressProvider({ children }) {
     });
   };
 
-  const isTopicFlagged = (topicId) => {
-    return progress.flaggedItems.topics.includes(topicId);
-  };
-
   const isQuestionFlagged = (topicId, questionIndex) => {
     const questionId = `${topicId}_${questionIndex}`;
     return progress.flaggedItems.questions.includes(questionId);
@@ -345,9 +305,8 @@ export function ProgressProvider({ children }) {
 
   const getFlaggedCounts = () => {
     return {
-      topics: progress.flaggedItems.topics.length,
       questions: progress.flaggedItems.questions.length,
-      total: progress.flaggedItems.topics.length + progress.flaggedItems.questions.length,
+      total: progress.flaggedItems.questions.length,
     };
   };
 
@@ -355,7 +314,6 @@ export function ProgressProvider({ children }) {
     setProgress(prev => ({
       ...prev,
       flaggedItems: {
-        topics: [],
         questions: [],
       },
     }));
@@ -395,7 +353,6 @@ export function ProgressProvider({ children }) {
         progress,
         markTopicViewed,
         markTopicMastered,
-        setFlashcardConfidence,
         addQuizScore,
         addInterviewResult,
         saveTopicNotes,
@@ -403,10 +360,8 @@ export function ProgressProvider({ children }) {
         getTopicProgress,
         getOverallStats,
         resetProgress,
-        toggleFlagTopic,
         toggleFlagQuestion,
         autoFlagQuestion,
-        isTopicFlagged,
         isQuestionFlagged,
         getFlaggedCounts,
         clearAllFlags,

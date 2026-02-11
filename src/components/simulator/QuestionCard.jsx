@@ -58,7 +58,7 @@ export default function QuestionCard({
       transition={{ duration: 0.3 }}
     >
       {/* Question Header */}
-      <div className="mb-6">
+      <div className="mb-4">
         <div className="flex items-center gap-3 mb-2">
           <span className="text-2xl">{question.icon}</span>
           <span className="font-body text-sm text-white/40">
@@ -68,118 +68,129 @@ export default function QuestionCard({
             {question.category}
           </span>
         </div>
-        <h2 className="font-display font-bold text-xl md:text-2xl text-white">
+        <h2 className="font-display font-bold text-lg md:text-xl text-white">
           {question.question}
         </h2>
-        <p className="font-body text-white/50 mt-2 text-sm leading-relaxed">
-          {question.context}
-        </p>
+        {question.context && (
+          <p className="font-body text-white/50 mt-1 text-sm leading-relaxed">
+            {question.context}
+          </p>
+        )}
       </div>
 
-      {/* Options */}
-      <div className="space-y-3 mb-6">
-        {question.options.map((option) => {
-          let optionStyle;
-          if (isRevealed) {
-            if (option.id === question.correctAnswer) {
+      {/* Two-column layout: Options (left) + Reasoning (right) */}
+      <div className="flex flex-col lg:flex-row gap-4 mb-4">
+        {/* Options — left column */}
+        <div className="space-y-2 lg:w-3/5 lg:max-h-[60vh] lg:overflow-y-auto lg:pr-2">
+          {question.options.map((option, idx) => {
+            const letter = String.fromCharCode(65 + idx);
+            let optionStyle;
+            let letterStyle;
+            if (isRevealed) {
+              if (option.id === question.correctAnswer) {
+                optionStyle =
+                  'border-neon-green bg-neon-green/10 shadow-[0_0_15px_rgba(139,191,159,0.15)]';
+                letterStyle = 'bg-neon-green/20 text-neon-green border-neon-green/40';
+              } else if (
+                option.id === selectedOption &&
+                option.id !== question.correctAnswer
+              ) {
+                optionStyle =
+                  'border-neon-red/60 bg-neon-red/10';
+                letterStyle = 'bg-neon-red/20 text-neon-red border-neon-red/40';
+              } else {
+                optionStyle = 'border-dark-500 bg-dark-800 opacity-50';
+                letterStyle = 'bg-dark-700 text-white/40 border-dark-500';
+              }
+            } else if (option.id === selectedOption) {
               optionStyle =
-                'border-neon-green bg-neon-green/10 shadow-[0_0_15px_rgba(200,186,170,0.15)]';
-            } else if (
-              option.id === selectedOption &&
-              option.id !== question.correctAnswer
-            ) {
-              optionStyle =
-                'border-neon-red/60 bg-neon-red/10';
+                'border-neon-cyan bg-neon-cyan/10 shadow-[0_0_15px_rgba(228,216,196,0.15)]';
+              letterStyle = 'bg-neon-cyan/20 text-neon-cyan border-neon-cyan/40';
             } else {
-              optionStyle = 'border-dark-500 bg-dark-800 opacity-50';
+              optionStyle =
+                'border-dark-500 bg-gradient-to-r from-dark-800 to-dark-700 hover:border-dark-400';
+              letterStyle = 'bg-dark-700 text-white/50 border-dark-500';
             }
-          } else if (option.id === selectedOption) {
-            optionStyle =
-              'border-neon-cyan bg-neon-cyan/10 shadow-[0_0_15px_rgba(228,216,196,0.15)]';
-          } else {
-            optionStyle =
-              'border-dark-500 bg-gradient-to-r from-dark-800 to-dark-700 hover:border-dark-400';
-          }
 
-          return (
-            <motion.button
-              key={option.id}
-              onClick={() => !isRevealed && setSelectedOption(option.id)}
-              disabled={isRevealed}
-              whileHover={!isRevealed ? { x: 4 } : {}}
-              whileTap={!isRevealed ? { scale: 0.99 } : {}}
-              className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3 ${optionStyle}`}
-            >
-              {/* Radio indicator */}
-              <div
-                className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  isRevealed && option.id === question.correctAnswer
-                    ? 'border-neon-green bg-neon-green/20'
-                    : isRevealed &&
-                      option.id === selectedOption &&
-                      !optionCorrect
-                    ? 'border-neon-red bg-neon-red/20'
-                    : option.id === selectedOption
-                    ? 'border-neon-cyan bg-neon-cyan/20'
-                    : 'border-dark-400'
-                }`}
+            return (
+              <motion.button
+                key={option.id}
+                onClick={() => !isRevealed && setSelectedOption(option.id)}
+                disabled={isRevealed}
+                whileHover={!isRevealed ? { x: 4 } : {}}
+                whileTap={!isRevealed ? { scale: 0.99 } : {}}
+                className={`w-full text-left px-3 py-2 rounded-lg border transition-all duration-200 flex items-start gap-3 ${optionStyle}`}
               >
-                {isRevealed && option.id === question.correctAnswer && (
-                  <Check className="w-3 h-3 text-neon-green" />
-                )}
-                {isRevealed &&
-                  option.id === selectedOption &&
-                  !optionCorrect && (
-                    <X className="w-3 h-3 text-neon-red" />
-                  )}
-                {!isRevealed && option.id === selectedOption && (
-                  <div className="w-2 h-2 rounded-full bg-neon-cyan" />
-                )}
-              </div>
+                {/* Letter badge */}
+                <span
+                  className={`flex-shrink-0 w-7 h-7 rounded-md border flex items-center justify-center font-display font-bold text-xs mt-0.5 ${letterStyle}`}
+                >
+                  {letter}
+                </span>
 
-              <span
-                className={`font-body font-medium ${
-                  isRevealed && option.id === question.correctAnswer
-                    ? 'text-neon-green'
-                    : isRevealed &&
-                      option.id === selectedOption &&
-                      !optionCorrect
-                    ? 'text-neon-red/80'
-                    : option.id === selectedOption
-                    ? 'text-neon-cyan'
-                    : 'text-white/80'
-                }`}
+                <span
+                  className={`font-body text-sm leading-snug ${
+                    isRevealed && option.id === question.correctAnswer
+                      ? 'text-neon-green'
+                      : isRevealed &&
+                        option.id === selectedOption &&
+                        !optionCorrect
+                      ? 'text-neon-red/80'
+                      : option.id === selectedOption
+                      ? 'text-neon-cyan'
+                      : 'text-white/70'
+                  }`}
+                >
+                  {option.label}
+                </span>
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {/* Reasoning + Submit — right column */}
+        <div className="lg:w-2/5 flex flex-col">
+          <label className="font-body text-sm text-white/60 block mb-2">
+            {isRevealed ? 'Your reasoning:' : 'Explain your reasoning:'}
+          </label>
+          <textarea
+            value={reasoning}
+            onChange={(e) => setReasoning(e.target.value)}
+            disabled={isRevealed}
+            placeholder="Why does this choice maximize hover time? Explain the physics..."
+            className={`w-full flex-1 min-h-[120px] bg-dark-800 border-2 rounded-xl p-3 font-body text-sm
+              text-white/80 placeholder-white/30 resize-none
+              focus:outline-none transition-all duration-200
+              ${
+                isRevealed
+                  ? 'border-dark-500 opacity-80'
+                  : 'border-dark-500 focus:border-neon-cyan/50'
+              }`}
+          />
+          <div className="flex justify-end mt-3">
+            {!isRevealed ? (
+              <Button
+                variant="primary"
+                onClick={handleSubmit}
+                disabled={!canSubmit}
+                icon={<Send className="w-4 h-4" />}
               >
-                {option.label}
-              </span>
-            </motion.button>
-          );
-        })}
+                Submit Answer
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                onClick={onNextQuestion}
+                icon={<ArrowRight className="w-4 h-4" />}
+              >
+                {isLastQuestion ? 'See Results' : 'Next Question'}
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Reasoning Textarea */}
-      <div className="mb-6">
-        <label className="font-body text-sm text-white/60 block mb-2">
-          {isRevealed ? 'Your reasoning:' : 'Explain your reasoning — why would this choice maximize hover time?'}
-        </label>
-        <textarea
-          value={reasoning}
-          onChange={(e) => setReasoning(e.target.value)}
-          disabled={isRevealed}
-          placeholder="Think like you're in the interview. Explain the physics behind your choice..."
-          rows={4}
-          className={`w-full bg-dark-800 border-2 rounded-xl p-4 font-body text-sm
-            text-white/80 placeholder-white/30 resize-none
-            focus:outline-none transition-all duration-200
-            ${
-              isRevealed
-                ? 'border-dark-500 opacity-80'
-                : 'border-dark-500 focus:border-neon-cyan/50'
-            }`}
-        />
-      </div>
-
-      {/* Revealed: Feedback */}
+      {/* Revealed: Feedback (full-width below) */}
       <AnimatePresence>
         {isRevealed && (
           <motion.div
@@ -189,7 +200,7 @@ export default function QuestionCard({
           >
             {/* Correct/Incorrect/Partial Banner */}
             <div
-              className={`flex items-center gap-3 p-4 rounded-xl mb-4 border-2 ${
+              className={`flex items-center gap-3 p-3 rounded-xl mb-3 border-2 ${
                 isCorrect
                   ? 'border-neon-green/40 bg-neon-green/10'
                   : optionCorrect && !validationResult?.adequate
@@ -198,7 +209,7 @@ export default function QuestionCard({
               }`}
             >
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                   isCorrect
                     ? 'bg-neon-green/20'
                     : optionCorrect && !validationResult?.adequate
@@ -207,16 +218,16 @@ export default function QuestionCard({
                 }`}
               >
                 {isCorrect ? (
-                  <Check className="w-6 h-6 text-neon-green" />
+                  <Check className="w-5 h-5 text-neon-green" />
                 ) : optionCorrect && !validationResult?.adequate ? (
-                  <AlertTriangle className="w-6 h-6 text-neon-yellow" />
+                  <AlertTriangle className="w-5 h-5 text-neon-yellow" />
                 ) : (
-                  <X className="w-6 h-6 text-neon-orange" />
+                  <X className="w-5 h-5 text-neon-orange" />
                 )}
               </div>
               <div>
                 <p
-                  className={`font-display font-bold ${
+                  className={`font-display font-bold text-sm ${
                     isCorrect
                       ? 'text-neon-green'
                       : optionCorrect && !validationResult?.adequate
@@ -231,7 +242,7 @@ export default function QuestionCard({
                     : 'Not quite.'}
                 </p>
                 {!optionCorrect && (
-                  <p className="font-body text-sm text-white/60">
+                  <p className="font-body text-xs text-white/60">
                     The optimal answer is{' '}
                     <span className="text-neon-green font-semibold">
                       {correctOption?.label}
@@ -239,107 +250,89 @@ export default function QuestionCard({
                   </p>
                 )}
                 {optionCorrect && !validationResult?.adequate && (
-                  <p className="font-body text-sm text-white/60">
+                  <p className="font-body text-xs text-white/60">
                     You picked correctly but couldn't explain the physics. In an interview, you need to articulate <span className="text-neon-yellow font-semibold">why</span>.
                   </p>
                 )}
               </div>
             </div>
 
-            {/* Concept Coverage (shown when correct option selected) */}
-            {optionCorrect && validationResult && (
-              <div className="p-4 rounded-xl mb-4 bg-dark-800 border border-dark-500">
-                {validationResult.tooShort && (
-                  <p className="font-body text-sm text-neon-yellow mb-3">
-                    Your reasoning was too brief. Aim for at least a few sentences explaining the physics.
-                  </p>
-                )}
-
-                {/* Missed concepts — readable list with hints */}
-                {validationResult.missedConcepts.length > 0 && (
-                  <div className="mb-3">
-                    <p className="font-body text-sm text-neon-orange mb-2">
-                      Your answer should have mentioned:
+            {/* Concept Coverage + Physics side by side on large screens */}
+            <div className="flex flex-col lg:flex-row gap-3">
+              {/* Concept Coverage (shown when correct option selected) */}
+              {optionCorrect && validationResult && (
+                <div className="p-3 rounded-xl bg-dark-800 border border-dark-500 lg:w-1/2">
+                  {validationResult.tooShort && (
+                    <p className="font-body text-sm text-neon-yellow mb-2">
+                      Your reasoning was too brief. Aim for at least a few sentences.
                     </p>
-                    <div className="space-y-2">
-                      {validationResult.missedConcepts.map((concept) => (
-                        <div
-                          key={concept.name}
-                          className="flex items-start gap-2 p-2 rounded-lg bg-neon-orange/5 border border-neon-orange/20"
-                        >
-                          <X className="w-4 h-4 text-neon-orange flex-shrink-0 mt-0.5" />
-                          <div>
-                            <span className="font-display font-semibold text-sm text-white">
-                              {concept.name}
-                            </span>
-                            {concept.hint && (
-                              <p className="font-body text-xs text-white/60 mt-0.5">
-                                {concept.hint}
-                              </p>
-                            )}
+                  )}
+
+                  {validationResult.missedConcepts.length > 0 && (
+                    <div className="mb-2">
+                      <p className="font-body text-xs text-neon-orange mb-1.5">
+                        Should have mentioned:
+                      </p>
+                      <div className="space-y-1.5">
+                        {validationResult.missedConcepts.map((concept) => (
+                          <div
+                            key={concept.name}
+                            className="flex items-start gap-2 p-1.5 rounded-lg bg-neon-orange/5 border border-neon-orange/20"
+                          >
+                            <X className="w-3.5 h-3.5 text-neon-orange flex-shrink-0 mt-0.5" />
+                            <div>
+                              <span className="font-display font-semibold text-xs text-white">
+                                {concept.name}
+                              </span>
+                              {concept.hint && (
+                                <p className="font-body text-xs text-white/60 mt-0.5">
+                                  {concept.hint}
+                                </p>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Matched concepts — compact badges */}
-                {validationResult.matchedConcepts.length > 0 && (
-                  <div>
-                    <p className="font-body text-xs text-white/50 mb-2">
-                      Concepts you covered:
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {validationResult.matchedConcepts.map((concept) => (
-                        <span
-                          key={concept.name}
-                          className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-body bg-neon-green/10 text-neon-green border border-neon-green/30"
-                        >
-                          <Check className="w-3 h-3" />
-                          {concept.name}
-                        </span>
-                      ))}
+                  {validationResult.matchedConcepts.length > 0 && (
+                    <div>
+                      <p className="font-body text-xs text-white/50 mb-1.5">
+                        Concepts you covered:
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {validationResult.matchedConcepts.map((concept) => (
+                          <span
+                            key={concept.name}
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-body bg-neon-green/10 text-neon-green border border-neon-green/30"
+                          >
+                            <Check className="w-3 h-3" />
+                            {concept.name}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            )}
+                  )}
+                </div>
+              )}
 
-            {/* Physics Explanation */}
-            <Card className="mb-4" glowColor={isCorrect ? 'green' : 'orange'}>
-              <h4 className="font-display font-semibold text-white mb-2">
-                The Physics
-              </h4>
-              <p className="font-body text-sm text-white/80 leading-relaxed">
-                {question.explanation}
-              </p>
-            </Card>
+              {/* Physics Explanation */}
+              <Card
+                className={optionCorrect && validationResult ? 'lg:w-1/2' : 'w-full'}
+                glowColor={isCorrect ? 'green' : 'orange'}
+              >
+                <h4 className="font-display font-semibold text-white text-sm mb-1.5">
+                  The Physics
+                </h4>
+                <p className="font-body text-sm text-white/80 leading-relaxed">
+                  {question.explanation}
+                </p>
+              </Card>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Action Buttons */}
-      <div className="flex justify-end mt-6">
-        {!isRevealed ? (
-          <Button
-            variant="primary"
-            onClick={handleSubmit}
-            disabled={!canSubmit}
-            icon={<Send className="w-4 h-4" />}
-          >
-            Submit Answer
-          </Button>
-        ) : (
-          <Button
-            variant="primary"
-            onClick={onNextQuestion}
-            icon={<ArrowRight className="w-4 h-4" />}
-          >
-            {isLastQuestion ? 'See Results' : 'Next Question'}
-          </Button>
-        )}
-      </div>
     </motion.div>
   );
 }
